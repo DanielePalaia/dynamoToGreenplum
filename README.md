@@ -1,7 +1,7 @@
 # Introduction
 This software is a sample project that shows how it is possible to create a GPSS client for Greenplum Streaming Server. </br>
 We will go through all the necessary phases needed to build it </br>
-This application is using the following technologies: DynamoDB streams, GRPC, GO and Greenplum Streaming Server </br>
+This application is using the following technologies: DynamoDB streams, GRPC, GO and Greenplum Streaming Server (GPSS) </br>
 The following reading can be useful to understand the scenario: </br></br>
 **DynamoDB streams:** </br>
 https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html </br>
