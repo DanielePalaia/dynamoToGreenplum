@@ -8,6 +8,7 @@ https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html </
 **GRPC:**  </br>
 https://grpc.io/ </br>
 **Greenplum GPSS:**</br>
+https://gpdb.docs.pivotal.io/5160/greenplum-stream/overview.html</br>
 https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/dev_client.html</br>
 
 ## Summary
