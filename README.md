@@ -80,7 +80,7 @@ where gpss.conf is </br></br>
 
 3. **Creating a Greenplum table** </br></br>
 Create a Greenplum table with just a json data field to contain elements from DynamoDB streams </br>
-**CREATE TABLE test(data json);** </br>
+**CREATE TABLE dynamosimulation2(data json);** </br>
 
 ### Running:
 The app is written in GO. Binaries files for osx and linux are already provided inside the folder ./bin </br>
