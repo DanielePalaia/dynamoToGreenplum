@@ -41,7 +41,7 @@ type GpssServer interface { </br>
 	DescribeTable(context.Context, *DescribeTableRequest) (*Columns, error) </br>
 }  </br></br>
 So these are the request you can send to the gpss server at the moment. Just include this package on your app and you can use them </br>
-On top of this I created a library to compose requests and call this interface which can be found in gpssfunc.go and can be resued or takes as template </br></br>
+On top of this I created a library to compose requests and call this interface which can be found in gpssfunc.go and can be resued or taken as template for future work</br></br>
 
 ## Design about the software
 
