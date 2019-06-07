@@ -102,7 +102,10 @@ The app is written in GO. Binaries files for osx and linux are already provided 
     endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region
   
  2. After it simply run the binary</br>
- ./dynamoToGreenplum
+ ./dynamoToGreenplum </br>
+ 
+ Once runned the software will begin to search for existing streams and ingest records (if any) </br>
+ After, it will wait for new streams or records to be generated (every 5sec) </br>
 
 ## Compiling
 you may want to compile the app. In this case you need a go compiler.</br>
