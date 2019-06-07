@@ -107,9 +107,9 @@ The app is written in GO. Binaries files for osx and linux are already provided 
 ## Compiling
 you may want to compile the app. In this case you need a go compiler.</br>
 Put the source in your $GOPATH/src directory</br>
-You need to download aws libraries, do as following</br>
-go get github.com/aws/aws-sdk-go/aws</br>
-go get github.com/aws/aws-sdk-go/aws/awserr</br>
-go get github.com/aws/aws-sdk-go/aws/session</br>
-go get github.com/aws/aws-sdk-go/service/dynamodbstreams</br>
+You need to download aws libraries, do as following:</br></br>
+go get github.com/aws/aws-sdk-go/aws</br></br>
+go get github.com/aws/aws-sdk-go/aws/awserr</br></br>
+go get github.com/aws/aws-sdk-go/aws/session</br></br>
+go get github.com/aws/aws-sdk-go/service/dynamodbstreams</br></br>
 The just run a go build or go install to produce the binary
