@@ -61,6 +61,11 @@ Items are sent to GPSS in batches configurable at input. When a certain amount o
    </br></br>
    Then generate some streams:</br></br>
    **/Users/dpalaia/Library/Python/3.7/bin/aws dynamodb put-item     --table-name MusicCollection     --item '{"Artist": {"S":"item_8"},"SongTitle": {"S":"Song Valuexcv 8"}}'     --region x --endpoint-url http://localhost:8000**   
+   </br></br>
+   Also, please configure your $HOME/.aws/credentials to put your aws credential (if you use it locally you can just put random values ) like </br></br>
+   [default]</br>
+aws_access_key_id=AKIAIOSFODNN7EXAMPLE</br>
+aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
   
 2. **Running GPSS** </br></br>
 Run a GPSS server instance on Greenplum side: </br>
