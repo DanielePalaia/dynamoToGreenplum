@@ -1,5 +1,5 @@
 # Introduction
-This software is a sample project that shows how it is possible to create a GPSS client for Greenplum Streaming Server. </br>
+This software is a template project that shows how it is possible to create a GPSS client for Greenplum Streaming Server. </br>
 We will go through all the necessary phases needed to build it </br>
 This application is using the following technologies: DynamoDB streams, GRPC, GO and Greenplum Streaming Server (GPSS) </br>
 The following reading can be useful to understand the scenario: </br></br>
@@ -107,6 +107,8 @@ The app is written in GO. Binaries files for osx and linux are already provided 
  
  Once runned the software will begin to search for existing streams and ingest records (if any) </br>
  After, it will wait for new streams or records to be generated (every 5sec) </br>
+ So you can add new insert in the table to generate new records to be processed like before try:</br></br>
+**/Users/dpalaia/Library/Python/3.7/bin/aws dynamodb put-item     --table-name MusicCollection     --item '{"Artist": {"S":"item_8"},"SongTitle": {"S":"Song Valuexcv 8"}}'     --region x --endpoint-url http://localhost:8000** 
 
 ## Compiling
 you may want to compile the app. In this case you need a go compiler.</br>
