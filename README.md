@@ -11,7 +11,7 @@ https://grpc.io/ </br>
 https://gpdb.docs.pivotal.io/5160/greenplum-stream/overview.html</br>
 https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/dev_client.html</br>
 
-## Summary
+## Description of the project
 The scenario we are building is the following: </br>We are receiving some dynamodb streams, initially all the ones already created and then
 we will wait for new ones to be generated and then we will do ingestions on a Greenplum Database table through GPSS.</br>
 DynamoDB stream records will be stored as .json in a Greenplum table to allow maximum flexibility on them </br>
@@ -45,7 +45,7 @@ type GpssServer interface { </br>
 So these are the request you can send to the gpss server at the moment. Just include this package on your app and you can use them </br>
 On top of this I created a library to compose requests and call this interface which can be found in gpssfunc.go and can be resued or taken as template for future work</br></br>
 
-## Design about the software
+## Design of the software
 
 The software is using the dynamodb streams api to collect the stream recors from dynamo db. </br>
 https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB_Streams.html </br>
