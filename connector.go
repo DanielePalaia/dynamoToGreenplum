@@ -182,7 +182,7 @@ func (s *awsSession) getShards(arn string) ([]*dynamodbstreams.Shard, error) {
 func (s *awsSession) getStreamsForTable() (*dynamodbstreams.ListStreamsOutput, error) {
 
 	input := &dynamodbstreams.ListStreamsInput{
-		/*TableName: &s.awsTable,*/
+		TableName: &s.awsTable,
 	}
 	result, err := s.dynamoClient.ListStreams(input)
 	if err != nil {
