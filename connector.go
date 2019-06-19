@@ -36,6 +36,11 @@ func makeAwsSession(region string, awsTable string, endPoint string, batch int, 
 	sess := session.Must(session.NewSession(config))
 	mysession := new(awsSession)
 
+	// Exception: we don't want to batch...
+	if batch == 0 {
+		mysession.buffer = make([]string, 1)
+	}
+
 	mysession.size = batch
 	mysession.buffer = make([]string, batch)
 
@@ -52,11 +57,12 @@ func makeAwsSession(region string, awsTable string, endPoint string, batch int, 
 // To retrieve all the stream records from a shard
 //
 // The following example retrieves all the stream records from a shard.
-func (s *awsSession) getStreamRecords(iterator *string) {
+func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
 	//svc := dynamodbstreams.New(session.New())
+
 	nrecords := 0
 	for {
-
+		iterator, _ := s.getShardIt(streamArn, shardId)
 		fmt.Println("Looping for records: ")
 		input := &dynamodbstreams.GetRecordsInput{
 			ShardIterator: aws.String(*iterator),
@@ -228,8 +234,8 @@ func (s *awsSession) processStream(stream *dynamodbstreams.Stream) {
 				}
 				mapshards[*(currentshard.ShardId)] = true
 				//fmt.Println(currentshard)
-				iterator, _ := s.getShardIt(*(stream.StreamArn), *(currentshard.ShardId))
-				go s.getStreamRecords(iterator)
+				//iterator, _ := s.getShardIt(*(stream.StreamArn), *(currentshard.ShardId))
+				go s.getStreamRecords(*(stream.StreamArn), *(currentshard.ShardId))
 
 			}
 			nshards = len(shards)
@@ -291,13 +297,6 @@ func (s *awsSession) pushToGreenplum() {
 		for _, rec := range records {
 
 			fmt.Println(rec)
-			if s.count == s.size {
-				log.Printf("im writing")
-				s.gpssclient.ConnectToGreenplumDatabase()
-				s.gpssclient.WriteToGreenplum(s.buffer)
-				s.gpssclient.DisconnectToGreenplumDatabase()
-				s.count = 0
-			}
 
 			b, err := json.Marshal(rec)
 			if err != nil {
@@ -307,6 +306,13 @@ func (s *awsSession) pushToGreenplum() {
 
 			s.buffer[s.count] = string(b)
 			s.count++
+			if s.count >= s.size {
+				log.Printf("im writing")
+				s.gpssclient.ConnectToGreenplumDatabase()
+				s.gpssclient.WriteToGreenplum(s.buffer)
+				s.gpssclient.DisconnectToGreenplumDatabase()
+				s.count = 0
+			}
 
 		}
 	}
