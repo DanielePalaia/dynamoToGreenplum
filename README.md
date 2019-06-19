@@ -107,7 +107,9 @@ The app is written in GO. Binaries files for osx and linux are already provided 
     **regionName=M**</br>
     **endPoint=http://localhost:8000**</br>
     
-    endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region
+endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region.
+Batch will buff items before sending the request to Greenplum (if set to 1 is immediate)
+   
       
  2. After it simply run the binary</br>
  ./dynamoToGreenplum </br>
