@@ -108,9 +108,7 @@ The app is written in GO. Binaries files for osx and linux are already provided 
     **endPoint=http://localhost:8000**</br>
     
     endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region
-    
-**Note: if you put batch=4 you need to push at least 5 elements on dynamo, so basically you need to stream batch+1 element to send the batch to gpss**
-  
+      
  2. After it simply run the binary</br>
  ./dynamoToGreenplum </br>
  
