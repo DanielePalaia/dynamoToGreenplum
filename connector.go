@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -54,15 +56,33 @@ func makeAwsSession(region string, awsTable string, endPoint string, batch int, 
 	return mysession
 }
 
+func (s *awsSession) checkIfSeqFileExists(shardId string) (string, string) {
+
+	filename := "./SeqNumbers/" + shardId
+	if _, err := os.Stat("./SeqNumbers/" + shardId); os.IsNotExist(err) {
+		// Create the new file
+		os.Create("./SeqNumbers/" + shardId)
+		return "", filename
+	} else {
+		file, _ := os.Open("./SeqNumbers/" + shardId)
+		// Start reading from the file with a reader.
+		reader := bufio.NewReader(file)
+		line, _ := reader.ReadString('\n')
+
+		return line, filename
+	}
+
+}
+
 // To retrieve all the stream records from a shard
 //
 // The following example retrieves all the stream records from a shard.
 func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
-	//svc := dynamodbstreams.New(session.New())
 
-	nrecords := 0
+	// Check if seqNumberFile exists
+	lastseqnumber, filename := s.checkIfSeqFileExists(shardId)
 	for {
-		iterator, _ := s.getShardIt(streamArn, shardId)
+		iterator, _ := s.getShardIt(streamArn, shardId, lastseqnumber)
 		fmt.Println("Looping for records: ")
 		input := &dynamodbstreams.GetRecordsInput{
 			ShardIterator: aws.String(*iterator),
@@ -98,20 +118,13 @@ func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
 			}
 		}
 
-		/*if result.NextShardIterator != nil {
-			fmt.Println("not null")
-			iterator = result.NextShardIterator
-
-		}*/
-
-		if len(result.Records) > nrecords {
-			recs := result.Records[nrecords:len(result.Records)]
-			s.greenplumChannel <- recs
-			nrecords = len(result.Records)
+		if len(result.Records) > 0 {
+			s.greenplumChannel <- result.Records
+			lastseqnumber = *(result.Records[len(result.Records)-1].Dynamodb.SequenceNumber)
+			ioutil.WriteFile(filename, []byte(lastseqnumber), 0644)
 		}
-		//s.greenplumChannel <- result.Records
 
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Second * 1)
 
 	}
 
@@ -121,12 +134,23 @@ func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
 //
 // The following example returns a shard iterator for the provided stream ARN and shard
 // ID.
-func (s *awsSession) getShardIt(streamArn string, label string) (*string, error) {
-	//svc := dynamodbstreams.New(session.New())
-	input := &dynamodbstreams.GetShardIteratorInput{
-		ShardId:           aws.String(label),
-		ShardIteratorType: aws.String("TRIM_HORIZON"),
-		StreamArn:         aws.String(streamArn),
+func (s *awsSession) getShardIt(streamArn string, label string, seqnumber string) (*string, error) {
+
+	var input *dynamodbstreams.GetShardIteratorInput
+
+	if seqnumber == "" {
+		input = &dynamodbstreams.GetShardIteratorInput{
+			ShardId:           aws.String(label),
+			ShardIteratorType: aws.String("TRIM_HORIZON"),
+			StreamArn:         aws.String(streamArn),
+		}
+	} else {
+		input = &dynamodbstreams.GetShardIteratorInput{
+			SequenceNumber:    aws.String(seqnumber),
+			ShardId:           aws.String(label),
+			ShardIteratorType: aws.String("AFTER_SEQUENCE_NUMBER"),
+			StreamArn:         aws.String(streamArn),
+		}
 	}
 
 	result, err := s.dynamoClient.GetShardIterator(input)
