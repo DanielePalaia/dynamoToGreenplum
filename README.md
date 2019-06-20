@@ -15,6 +15,7 @@ https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/dev_client.html</br>
 The scenario we are building is the following: </br>We are receiving some dynamodb streams, initially all the ones already created and then
 we will wait for new ones to be generated and then we will do ingestions on a Greenplum Database table through GPSS.</br>
 DynamoDB stream records will be stored as .json in a Greenplum table to allow maximum flexibility on them </br>
+**Update: an update was made since this initial version. Now in a file in ./bin/linux/SeqNumber directory a record sequence number will be stored so that if the software is interrupted will start from the last item ingested rather than start again from beginning **
 
 ### How to create a gpss app:
 GPSS is based on GRPC, a remote procedure call mechanism where from a contract (.proto file) you can generate automatically code that the client can use. The .proto of GPSS can be found in: </br>
