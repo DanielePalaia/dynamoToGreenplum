@@ -24,10 +24,11 @@ type awsSession struct {
 	awsTable         string
 	awsStreams       int
 	greenplumChannel chan []*dynamodbstreams.Record
+	batchTimeout     int
 	count            int
 }
 
-func makeAwsSession(region string, awsTable string, endPoint string, batch int, gpssclient *gpssClient) *awsSession {
+func makeAwsSession(region string, awsTable string, endPoint string, batch int, batchTimeout int, gpssclient *gpssClient) *awsSession {
 	//sess := session.New()
 	config := &aws.Config{
 		Region: aws.String(region),
@@ -44,6 +45,7 @@ func makeAwsSession(region string, awsTable string, endPoint string, batch int, 
 	}
 
 	mysession.size = batch
+	mysession.batchTimeout = batchTimeout
 	mysession.buffer = make([]string, batch)
 
 	mysession.dynamoClient = dynamodbstreams.New(sess)
@@ -275,7 +277,8 @@ func (s *awsSession) processStream(stream *dynamodbstreams.Stream) {
 func (s *awsSession) ProcessStreams() {
 
 	// Activate the gpss goroutine which will push items on Greenplum through gpss
-	go s.pushToGreenplum()
+	ticker := time.NewTicker(time.Duration(s.batchTimeout) * time.Second)
+	go s.pushToGreenplum(ticker)
 
 	nstreams := 0
 	// stream already processed
@@ -310,33 +313,46 @@ func (s *awsSession) ProcessStreams() {
 }
 
 /* This go-routine will just take care of pushing to gpss */
-func (s *awsSession) pushToGreenplum() {
+func (s *awsSession) pushToGreenplum(ticker *time.Ticker) {
 
 	fmt.Println("Greenplum goroutine activated")
 
 	for {
 		// wait for new records
-		records := <-s.greenplumChannel
+		select {
+		case records := <-s.greenplumChannel:
 
-		for _, rec := range records {
+			for _, rec := range records {
 
-			fmt.Println(rec)
+				fmt.Println(rec)
 
-			b, err := json.Marshal(rec)
-			if err != nil {
-				fmt.Printf("Error: %s", err)
-				return
+				b, err := json.Marshal(rec)
+				if err != nil {
+					fmt.Printf("Error: %s", err)
+					return
+				}
+
+				s.buffer[s.count] = string(b)
+				s.count++
+				if s.count >= s.size {
+					log.Printf("im writing")
+					s.gpssclient.ConnectToGreenplumDatabase()
+					s.gpssclient.WriteToGreenplum(s.buffer)
+					s.gpssclient.DisconnectToGreenplumDatabase()
+					s.count = 0
+				}
+
 			}
-
-			s.buffer[s.count] = string(b)
-			s.count++
-			if s.count >= s.size {
-				log.Printf("im writing")
-				s.gpssclient.ConnectToGreenplumDatabase()
-				s.gpssclient.WriteToGreenplum(s.buffer)
-				s.gpssclient.DisconnectToGreenplumDatabase()
-				s.count = 0
+		// Empty the buffer
+		case <-ticker.C:
+			if s.count < 1 {
+				continue
 			}
+			tmpbuffer := s.buffer[:s.count]
+			s.gpssclient.ConnectToGreenplumDatabase()
+			s.gpssclient.WriteToGreenplum(tmpbuffer)
+			s.gpssclient.DisconnectToGreenplumDatabase()
+			s.count = 0
 
 		}
 	}
