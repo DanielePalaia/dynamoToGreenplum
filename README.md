@@ -111,7 +111,7 @@ The app is written in GO. Binaries files for osx and linux are already provided 
     **endPoint=http://localhost:8000**</br>
     
 endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region.
-Batch will buff items before sending the request to Greenplum (if set to 1 is immediate)
+Batch will buff items before sending the request to Greenplum (if set to 1 is immediate)</br>
 **Update2: batchtimeout expressed in seconds will store the batch elements even if we didn't reach the batch values (to avoid elements to be stored forever in memory if we don't receive others**</br>
 **batchTimeout expressed in milliseconds is the pause we set every GetRecords is executed to check for updateds, lower values will consume more cpu**</br>
       
