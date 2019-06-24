@@ -106,7 +106,7 @@ The app is written in GO. Binaries files for osx and linux are already provided 
     **TableName=dynamosimulation2**</br>
     **batch=4**</br>
     **batchTimeout=5**</br>
-    **recordTimeout=1000**</br>  
+    **recordTimeout=1000**  
     **regionName=M**</br>
     **endPoint=http://localhost:8000**</br>
     
