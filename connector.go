@@ -25,10 +25,11 @@ type awsSession struct {
 	awsStreams       int
 	greenplumChannel chan []*dynamodbstreams.Record
 	batchTimeout     int
+	recordsTimeout   int
 	count            int
 }
 
-func makeAwsSession(region string, awsTable string, endPoint string, batch int, batchTimeout int, gpssclient *gpssClient) *awsSession {
+func makeAwsSession(region string, awsTable string, endPoint string, batch int, batchTimeout int, recordTimeout int, gpssclient *gpssClient) *awsSession {
 	//sess := session.New()
 	config := &aws.Config{
 		Region: aws.String(region),
@@ -46,6 +47,7 @@ func makeAwsSession(region string, awsTable string, endPoint string, batch int, 
 
 	mysession.size = batch
 	mysession.batchTimeout = batchTimeout
+	mysession.recordsTimeout = recordTimeout
 	mysession.buffer = make([]string, batch)
 
 	mysession.dynamoClient = dynamodbstreams.New(sess)
@@ -126,7 +128,7 @@ func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
 			ioutil.WriteFile(filename, []byte(lastseqnumber), 0644)
 		}
 
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Millisecond * time.Duration(s.recordsTimeout))
 
 	}
 

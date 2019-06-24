@@ -14,9 +14,10 @@ func main() {
 	regionName := prop["regionName"]
 	batch, _ := strconv.Atoi(prop["batch"])
 	batchTimeout, _ := strconv.Atoi(prop["batchTimeout"])
+	recordTimeout, _ := strconv.Atoi(prop["recordTimeout"])
 	endPoint := prop["endPoint"]
 	awsTable := prop["AwsTableName"]
-	awssession := makeAwsSession(regionName, awsTable, endPoint, batch, batchTimeout, gpssClient)
+	awssession := makeAwsSession(regionName, awsTable, endPoint, batch, batchTimeout, recordTimeout, gpssClient)
 
 	awssession.ProcessStreams()
 }
