@@ -18,8 +18,8 @@ DynamoDB stream records will be stored as .json in a Greenplum table to allow ma
 **Update: an update was made since this initial version. Now in a file in ./bin/linux/SeqNumber directory a record sequence number will be stored so that if the software is interrupted or restarted it will start ingesting from the last item previously ingested rather than start again from beginning**
 
 ## How to create a gpss app
-GPSS is based on GRPC, a remote procedure call mechanism where from a contract (.proto file) you can generate automatically code that the client can use. The .proto of GPSS can be found in: </br>
-</br>https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/svcdef.html</br></br>
+GPSS is based on GRPC, a remote procedure call mechanism where from a contract (.proto file) you can generate automatically code that the client can use. The .proto of GPSS can be found in: 
+</br>https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/svcdef.html</br>
 Code can be automatically generated with the protoc tool ex:</br>
 https://grpc.io/docs/quickstart/go/</br>
 You can use whatever programming language supported by GRPC: Java, C++, Go ecc.. </br>
