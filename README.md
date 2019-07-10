@@ -75,8 +75,9 @@ Items are sent to GPSS in batches configurable at input. When a certain amount o
    
    </br>
    Also, please configure your $HOME/.aws/credentials to put your aws credential (if you use it locally you can just put random values ) like </br></br>
-   [default]</br>
-   ```
+   [default]
+   
+```
 aws_access_key_id=AKIAIOSFODNN7EXAMPLE</br>
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
