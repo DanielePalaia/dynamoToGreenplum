@@ -142,7 +142,10 @@ Batch will buff items before sending the request to Greenplum (if set to 1 is im
  Once runned the software will begin to search for existing streams and ingest records (if any) </br>
  After, it will wait for new streams or records to be generated (every 5sec) </br>
  So you can add new insert in the table to generate new records to be processed like before try:</br></br>
+ 
+  ```
 /Users/dpalaia/Library/Python/3.7/bin/aws dynamodb put-item     --table-name MusicCollection     --item '{"Artist": {"S":"item_8"},"SongTitle": {"S":"Song Valuexcv 8"}}'     --region x --endpoint-url http://localhost:8000 
+ ```
 
 ## Compiling
 you may want to compile the app. In this case you need a go compiler.</br>
