@@ -75,9 +75,9 @@ Items are sent to GPSS in batches configurable at input. When a certain amount o
    
    </br>
    Also, please configure your $HOME/.aws/credentials to put your aws credential (if you use it locally you can just put random values ) like </br></br>
-   [default]
-   
+
 ```
+[default]
 aws_access_key_id=AKIAIOSFODNN7EXAMPLE</br>
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
@@ -88,7 +88,7 @@ gpss gpss.conf</br>
 where gpss.conf is </br></br>
 
 ```
-{</br>
+{
     "ListenAddress": {
         "Host": "",
         "Port": 50007,
@@ -104,7 +104,7 @@ where gpss.conf is </br></br>
 3. **Creating a Greenplum table** </br></br>
 Create a Greenplum table with just a json data field to contain elements from DynamoDB streams </br>
 ```
-CREATE TABLE dynamosimulation2(data json); </br>
+CREATE TABLE dynamosimulation2(data json);
 ```
 
 ### Running
