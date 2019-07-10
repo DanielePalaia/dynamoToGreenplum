@@ -17,7 +17,7 @@ we will wait for new ones to be generated and then we will do ingestions on a Gr
 DynamoDB stream records will be stored as .json in a Greenplum table to allow maximum flexibility on them </br>
 **Update: an update was made since this initial version. Now in a file in ./bin/linux/SeqNumber directory a record sequence number will be stored so that if the software is interrupted or restarted it will start ingesting from the last item previously ingested rather than start again from beginning**
 
-## How to create a gpss app:
+## How to create a gpss app
 GPSS is based on GRPC, a remote procedure call mechanism where from a contract (.proto file) you can generate automatically code that the client can use. The .proto of GPSS can be found in: </br>
 </br>https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/svcdef.html</br></br>
 Code can be automatically generated with the protoc tool ex:</br>
@@ -94,7 +94,7 @@ where gpss.conf is </br></br>
 Create a Greenplum table with just a json data field to contain elements from DynamoDB streams </br>
 **CREATE TABLE dynamosimulation2(data json);** </br>
 
-### Running:
+### Running
 The app is written in GO. Binaries files for osx and linux are already provided inside the folder ./bin </br>
 
 1. There is an initialization file properties.ini which needs to be filled before running the software: </br>
