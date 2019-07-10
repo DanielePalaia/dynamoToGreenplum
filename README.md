@@ -63,16 +63,22 @@ Items are sent to GPSS in batches configurable at input. When a certain amount o
 ### Prerequisites
 1. **Install DynamoDB and aws-cli (if you don't have aws access)** </br></br>
    I tried the software locally, so first phase is to install dynamodb and aws-cli, creating a table supporting streams and generate some streams
-   (for example doing some inserts). Like this:</br></br>
+   (for example doing some inserts). Like this:
+ ```  
    /Users/dpalaia/Library/Python/3.7/bin/aws dynamodb create-table     --table-name MusicCollection     --attribute-definitions         AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S     --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE     --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1  --stream-specification StreamEnabled=true,StreamViewType=NEW_AND_OLD_IMAGES --endpoint-url http://localhost:8000 --region x
-   </br></br>
-   Then generate some streams:</br></br>
+```
+   
+   Then generate some streams:
+   ```
    /Users/dpalaia/Library/Python/3.7/bin/aws dynamodb put-item     --table-name MusicCollection     --item '{"Artist": {"S":"item_8"},"SongTitle": {"S":"Song Valuexcv 8"}}'     --region x --endpoint-url http://localhost:8000   
+   ```
    </br>
    Also, please configure your $HOME/.aws/credentials to put your aws credential (if you use it locally you can just put random values ) like </br></br>
    [default]</br>
+   ```
 aws_access_key_id=AKIAIOSFODNN7EXAMPLE</br>
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+```
   
 2. **Running GPSS** </br></br>
 Run a GPSS server instance on Greenplum side: </br>
