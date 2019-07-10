@@ -59,7 +59,7 @@ When a new stream appears it creates a new goroutine for it to manage new shards
 Also a dedicated goroutine will take care to send batch of informations to GPSS </br>
 Items are sent to GPSS in batches configurable at input. When a certain amount of records is received from dynamodb a request will be activated to GPSS for ingestion</br>
 
-## Running the app:
+## Running the app
 ### Prerequisites
 1. **Install DynamoDB and aws-cli (if you don't have aws access)** </br></br>
    I tried the software locally, so first phase is to install dynamodb and aws-cli, creating a table supporting streams and generate some streams
