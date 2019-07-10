@@ -78,6 +78,7 @@ aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Run a GPSS server instance on Greenplum side: </br>
 **gpss gpss.conf**</br>
 where gpss.conf is </br></br>
+```
 {</br>
     "ListenAddress": {</br>
         "Host": "",</br>
@@ -89,30 +90,35 @@ where gpss.conf is </br></br>
         "Port": 8113</br>
     }</br>
 }</br>
+```
 
 3. **Creating a Greenplum table** </br></br>
 Create a Greenplum table with just a json data field to contain elements from DynamoDB streams </br>
-**CREATE TABLE dynamosimulation2(data json);** </br>
+```
+CREATE TABLE dynamosimulation2(data json); </br>
+```
 
 ### Running
 The app is written in GO. Binaries files for osx and linux are already provided inside the folder ./bin </br>
 
 1. There is an initialization file properties.ini which needs to be filled before running the software: </br>
 
-    **GpssAddress=172.16.125.152:50007**</br> 
-    **GreenplumAddress=172.16.125.152**</br>
-    **GreenplumPort=5432**</br>
-    **GreenplumUser=gpadmin**</br>
-    **GreenplumPasswd=**</br>
-    **Database=dashboard**</br>
-    **SchemaName=public**</br>
-    **AwsTableName=MusicCollection**</br>
-    **TableName=dynamosimulation2**</br>
-    **batch=4**</br>
-    **batchTimeout=5**</br>
-    **recordTimeout=1000**  
-    **regionName=M**</br>
-    **endPoint=http://localhost:8000**</br>
+    ```
+    GpssAddress=172.16.125.152:50007**</br> 
+    GreenplumAddress=172.16.125.152**</br>
+    GreenplumPort=5432**</br>
+    GreenplumUser=gpadmin**</br>
+    GreenplumPasswd=**</br>
+    Database=dashboard**</br>
+    SchemaName=public**</br>
+    AwsTableName=MusicCollection**</br>
+    TableName=dynamosimulation2**</br>
+    batch=4**</br>
+    batchTimeout=5**</br>
+    recordTimeout=1000**  
+    regionName=M**</br>
+    endPoint=http://localhost:8000**</br>
+    ```
     
 endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region.
 Batch will buff items before sending the request to Greenplum (if set to 1 is immediate)</br>
@@ -125,7 +131,7 @@ Batch will buff items before sending the request to Greenplum (if set to 1 is im
  Once runned the software will begin to search for existing streams and ingest records (if any) </br>
  After, it will wait for new streams or records to be generated (every 5sec) </br>
  So you can add new insert in the table to generate new records to be processed like before try:</br></br>
-**/Users/dpalaia/Library/Python/3.7/bin/aws dynamodb put-item     --table-name MusicCollection     --item '{"Artist": {"S":"item_8"},"SongTitle": {"S":"Song Valuexcv 8"}}'     --region x --endpoint-url http://localhost:8000** 
+/Users/dpalaia/Library/Python/3.7/bin/aws dynamodb put-item     --table-name MusicCollection     --item '{"Artist": {"S":"item_8"},"SongTitle": {"S":"Song Valuexcv 8"}}'     --region x --endpoint-url http://localhost:8000 
 
 ## Compiling
 you may want to compile the app. In this case you need a go compiler.</br>
