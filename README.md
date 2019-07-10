@@ -15,8 +15,8 @@ https://gpdb.docs.pivotal.io/5160/greenplum-stream/api/dev_client.html</br>
 The scenario we are building is the following: </br>We are receiving some dynamodb streams, initially all the ones already created and then
 we will wait for new ones to be generated and then we will do ingestions on a Greenplum Database table through GPSS.</br>
 DynamoDB stream records will be stored as .json in a Greenplum table to allow maximum flexibility on them </br>
- ![Screenshot](image1.png)
- ![Screenshot](image2.png)
+ ![Screenshot](./images-image1.png)
+ ![Screenshot](./images/image2.png)
 
 
 ## How to create a gpss app
