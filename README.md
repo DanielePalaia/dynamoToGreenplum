@@ -104,20 +104,20 @@ The app is written in GO. Binaries files for osx and linux are already provided 
 1. There is an initialization file properties.ini which needs to be filled before running the software: </br>
 
     ```
-    GpssAddress=172.16.125.152:50007**</br> 
-    GreenplumAddress=172.16.125.152**</br>
-    GreenplumPort=5432**</br>
-    GreenplumUser=gpadmin**</br>
-    GreenplumPasswd=**</br>
-    Database=dashboard**</br>
-    SchemaName=public**</br>
-    AwsTableName=MusicCollection**</br>
-    TableName=dynamosimulation2**</br>
-    batch=4**</br>
-    batchTimeout=5**</br>
-    recordTimeout=1000**  
-    regionName=M**</br>
-    endPoint=http://localhost:8000**</br>
+    GpssAddress=172.16.125.152:50007</br> 
+    GreenplumAddress=172.16.125.152</br>
+    GreenplumPort=5432</br>
+    GreenplumUser=gpadmin</br>
+    GreenplumPasswd=</br>
+    Database=dashboard</br>
+    SchemaName=public</br>
+    AwsTableName=MusicCollection</br>
+    TableName=dynamosimulation2</br>
+    batch=4</br>
+    batchTimeout=5</br>
+    recordTimeout=1000  
+    regionName=M</br>
+    endPoint=http://localhost:8000</br>
     ```
     
 endPoint may be used if running locally (in this case put the same region you used during dynamodb insert), otherwise specify just a valid aws region.
