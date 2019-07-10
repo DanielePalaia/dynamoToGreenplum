@@ -80,10 +80,10 @@ Items are sent to GPSS in batches configurable at input. When a certain amount o
 aws_access_key_id=AKIAIOSFODNN7EXAMPLE</br>
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
-  </br>
+
 2. **Running GPSS** </br></br>
 Run a GPSS server instance on Greenplum side: </br>
-**gpss gpss.conf**</br>
+gpss gpss.conf</br>
 where gpss.conf is </br></br>
 
 ```
@@ -99,8 +99,7 @@ where gpss.conf is </br></br>
     }
 }
 ```
-
- </br>
+ 
 3. **Creating a Greenplum table** </br></br>
 Create a Greenplum table with just a json data field to contain elements from DynamoDB streams </br>
 ```
