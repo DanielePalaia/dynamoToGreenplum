@@ -87,7 +87,7 @@ aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 2. **Running GPSS** </br></br>
 Run a GPSS server instance on Greenplum side: </br>
 gpss gpss.conf</br>
-where gpss.conf is </br></br>
+where gpss.conf is 
 
 ```
 {
