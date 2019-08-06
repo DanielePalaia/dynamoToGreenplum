@@ -25,9 +25,10 @@ type gpssClient struct {
 	Database         string
 	SchemaName       string
 	TableName        string
+	logs             string
 }
 
-func MakeGpssClient(gpssAddress string, greenplumAddress string, greenplumPort int32, user string, password string, database string, schema string, table string) *gpssClient {
+func MakeGpssClient(gpssAddress string, greenplumAddress string, greenplumPort int32, user string, password string, database string, schema string, table string, logs string) *gpssClient {
 
 	gpssClient := new(gpssClient)
 	gpssClient.GpssAddress = gpssAddress
@@ -38,13 +39,16 @@ func MakeGpssClient(gpssAddress string, greenplumAddress string, greenplumPort i
 	gpssClient.Database = database
 	gpssClient.SchemaName = schema
 	gpssClient.TableName = table
+	gpssClient.logs = logs
 
 	return gpssClient
 }
 
 func (client *gpssClient) ConnectToGrpcServer() {
 
-	fmt.Println("connecting to grpc server")
+	if client.logs == "on" {
+		fmt.Println("connecting to grpc server")
+	}
 	/* Connecting to the grpc server */
 	serverAddr := flag.String("server_addr", client.GpssAddress, "The server address in the format of host:port")
 	var err error
@@ -54,13 +58,18 @@ func (client *gpssClient) ConnectToGrpcServer() {
 	}
 	client.client = gpss.NewGpssClient(client.conn)
 
-	fmt.Println("connected")
+	if client.logs == "on" {
+		fmt.Println("connected")
+	}
 
 }
 
 func (client *gpssClient) ConnectToGreenplumDatabase() {
 
-	fmt.Println("connecting to a greenplum database")
+	if client.logs == "on" {
+		fmt.Println("connecting to a greenplum database")
+	}
+
 	connReq := gpss.ConnectRequest{Host: client.GreenplumAddress, Port: client.GreenplumPort, Password: client.GreenplumPasswd, Username: client.GreenplumUser, DB: client.Database}
 	var err error
 	client.session, err = client.client.Connect(context.Background(), &connReq)
@@ -72,7 +81,9 @@ func (client *gpssClient) ConnectToGreenplumDatabase() {
 
 func (client *gpssClient) DisconnectToGreenplumDatabase() {
 
-	fmt.Println("disconnecting to a greenplum database")
+	if client.logs == "on" {
+		fmt.Println("disconnecting to a greenplum database")
+	}
 	var err error
 	_, err = client.client.Disconnect(context.Background(), client.session)
 	if err != nil {
@@ -83,7 +94,9 @@ func (client *gpssClient) DisconnectToGreenplumDatabase() {
 
 func (client *gpssClient) DescribeTable() *gpss.Columns {
 
-	fmt.Println("table informations")
+	if client.logs == "on" {
+		fmt.Println("table informations")
+	}
 	describeReq := gpss.DescribeTableRequest{Session: client.session, TableName: client.TableName, SchemaName: client.SchemaName}
 
 	columns, _ := client.client.DescribeTable(context.Background(), &describeReq)
@@ -94,7 +107,9 @@ func (client *gpssClient) DescribeTable() *gpss.Columns {
 
 func (client *gpssClient) prepareForWriting(cols *gpss.Columns) {
 
-	fmt.Println("prepare for writing")
+	if client.logs == "on" {
+		fmt.Println("prepare for writing")
+	}
 	// Prepare for writing
 	columns := make([]string, len(cols.Columns))
 	// Looping over table columns as defined in greenplum
@@ -194,6 +209,8 @@ func (client *gpssClient) closeRequest() {
 		log.Fatalf("fail close write to database: %v", err)
 	}
 
-	fmt.Println("Result: ", tStats.String())
+	if client.logs == "on" {
+		fmt.Println("Result: ", tStats.String())
+	}
 
 }

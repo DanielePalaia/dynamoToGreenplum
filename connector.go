@@ -27,9 +27,10 @@ type awsSession struct {
 	batchTimeout     int
 	recordsTimeout   int
 	count            int
+	logs             string
 }
 
-func makeAwsSession(region string, awsTable string, endPoint string, batch int, batchTimeout int, recordTimeout int, gpssclient *gpssClient) *awsSession {
+func makeAwsSession(region string, awsTable string, endPoint string, batch int, batchTimeout int, recordTimeout int, gpssclient *gpssClient, logs string) *awsSession {
 	//sess := session.New()
 	config := &aws.Config{
 		Region: aws.String(region),
@@ -56,6 +57,7 @@ func makeAwsSession(region string, awsTable string, endPoint string, batch int, 
 	mysession.awsStreams = 0
 	mysession.greenplumChannel = make(chan []*dynamodbstreams.Record)
 	mysession.count = 0
+	mysession.logs = logs
 
 	return mysession
 }
@@ -87,7 +89,9 @@ func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
 	lastseqnumber, filename := s.checkIfSeqFileExists(shardId)
 	for {
 		iterator, _ := s.getShardIt(streamArn, shardId, lastseqnumber)
-		fmt.Println("Looping for records: ")
+		if s.logs == "on" {
+			fmt.Println("Looping for records: ")
+		}
 		input := &dynamodbstreams.GetRecordsInput{
 			ShardIterator: aws.String(*iterator),
 		}
@@ -178,7 +182,9 @@ func (s *awsSession) getShardIt(streamArn string, label string, seqnumber string
 		return nil, err
 	}
 
-	fmt.Println(result)
+	if s.logs == "on" {
+		fmt.Println(result)
+	}
 	return result.ShardIterator, nil
 }
 
@@ -244,16 +250,22 @@ func (s *awsSession) processStream(stream *dynamodbstreams.Stream) {
 
 	nshards := 0
 	mapshards := make(map[string]bool)
-	fmt.Println("Processing stream: ")
+	if s.logs == "on" {
+		fmt.Println("Processing stream: ")
+	}
 	//fmt.Println(stream)
 
 	for {
-		fmt.Println("looping for new shards to arrive for stream")
+		if s.logs == "on" {
+			fmt.Println("looping for new shards to arrive for stream")
+		}
 		//Get the shards from the stream
 		shards, _ := s.getShards(*(stream.StreamArn))
 		// New shard arrived
 		if len(shards) > nshards {
-			fmt.Println("new shards arrived")
+			if s.logs == "on" {
+				fmt.Println("new shards arrived")
+			}
 			//shardsToProcess := shards[nshards:len(shards)]
 
 			for _, currentshard := range shards {
@@ -288,19 +300,27 @@ func (s *awsSession) ProcessStreams() {
 
 	// Every 5 sec check if new streams arrive
 	for {
-		fmt.Println("looping for new streams to arrive")
+		if s.logs == "on" {
+			fmt.Println("looping for new streams to arrive")
+		}
 		streams, _ := s.getStreamsForTable()
-		fmt.Printf("number of streams present %d", len(streams.Streams))
+		if s.logs == "on" {
+			fmt.Printf("number of streams present %d", len(streams.Streams))
+		}
 		// New streams arrived
 		if len(streams.Streams) > nstreams {
-			fmt.Println("new streams arrived")
+			if s.logs == "on" {
+				fmt.Println("new streams arrived")
+			}
 
 			for _, currentstream := range streams.Streams {
 				if mapstreams[*currentstream.StreamArn] == true {
 					continue
 				}
 				mapstreams[*currentstream.StreamArn] = true
-				fmt.Printf("looping currentstream: %s  %d\n", currentstream, len(streams.Streams))
+				if s.logs == "on" {
+					fmt.Printf("looping currentstream: %s  %d\n", currentstream, len(streams.Streams))
+				}
 				go s.processStream(currentstream)
 
 			}
@@ -317,7 +337,9 @@ func (s *awsSession) ProcessStreams() {
 /* This go-routine will just take care of pushing to gpss */
 func (s *awsSession) pushToGreenplum(ticker *time.Ticker) {
 
-	fmt.Println("Greenplum goroutine activated")
+	if s.logs == "on" {
+		fmt.Println("Greenplum goroutine activated")
+	}
 
 	for {
 		// wait for new records
@@ -326,7 +348,9 @@ func (s *awsSession) pushToGreenplum(ticker *time.Ticker) {
 
 			for _, rec := range records {
 
-				fmt.Println(rec)
+				if s.logs == "on" {
+					fmt.Println(rec)
+				}
 
 				b, err := json.Marshal(rec)
 				if err != nil {
@@ -337,7 +361,9 @@ func (s *awsSession) pushToGreenplum(ticker *time.Ticker) {
 				s.buffer[s.count] = string(b)
 				s.count++
 				if s.count >= s.size {
-					log.Printf("im writing")
+					if s.logs == "on" {
+						log.Printf("im writing")
+					}
 					s.gpssclient.ConnectToGreenplumDatabase()
 					s.gpssclient.WriteToGreenplum(s.buffer)
 					s.gpssclient.DisconnectToGreenplumDatabase()
