@@ -88,7 +88,11 @@ func (s *awsSession) getStreamRecords(streamArn string, shardId string) {
 	// Check if seqNumberFile exists
 	lastseqnumber, filename := s.checkIfSeqFileExists(shardId)
 	for {
-		iterator, _ := s.getShardIt(streamArn, shardId, lastseqnumber)
+		iterator, err := s.getShardIt(streamArn, shardId, lastseqnumber)
+		if iterator == nil {
+			fmt.Println("failed to get iterator for shard: %s and streamArn: %s error %v", shardId, streamArn, err)
+			os.Exit(-1)
+		}
 		if s.logs == "on" {
 			fmt.Println("Looping for records: ")
 		}
